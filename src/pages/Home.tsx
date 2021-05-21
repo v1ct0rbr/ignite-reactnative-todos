@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Header } from '../components/Header';
 import { MyTasksList } from '../components/MyTasksList';
 import { TodoInput } from '../components/TodoInput';
 import nextId, { setPrefix } from 'react-id-generator';
-import { Alert } from 'react-native';
+import { View } from 'react-native';
+
+import { ThemeProps } from '../@types/ThemeProps';
+import { getTheme } from '../utils/functions';
+
 // import { showMessage, hideMessage } from 'react-native-flash-message';
 
 interface Task {
@@ -13,10 +17,19 @@ interface Task {
 	done: boolean;
 }
 
+//default theme
+const initialThemeId = 1;
+
 export function Home() {
 	const [tasks, setTasks] = useState<Task[]>([]);
+	const [currentThemeId, setCurrentThemeId] = useState(initialThemeId);
+	const [currentTheme, setCurrentTheme] = useState<ThemeProps>(getTheme(initialThemeId));
 
 	setPrefix('');
+
+	useEffect(() => {
+		setCurrentTheme(getTheme(currentThemeId));
+	}, [currentThemeId]);
 
 	async function handleAddTask(newTaskTitle: string) {
 		//TODO - add new task if it's not empty
@@ -60,12 +73,17 @@ export function Home() {
 	}
 
 	return (
-		<>
-			<Header />
+		<View style={{ backgroundColor: currentTheme.appBackground, height: '100%' }}>
+			<Header theme={currentTheme.header} currentThemeId={currentThemeId} setCurrentThemeId={setCurrentThemeId} />
 
-			<TodoInput addTask={handleAddTask} />
+			<TodoInput addTask={handleAddTask} theme={currentTheme.todoInput} />
 
-			<MyTasksList tasks={tasks} onPress={handleMarkTaskAsDone} onLongPress={handleRemoveTask} />
-		</>
+			<MyTasksList
+				tasks={tasks}
+				onPress={handleMarkTaskAsDone}
+				onLongPress={handleRemoveTask}
+				theme={currentTheme.taskList}
+			/>
+		</View>
 	);
 }
