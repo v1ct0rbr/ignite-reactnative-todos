@@ -2,7 +2,7 @@
 import { ThemeProps } from '../@types/ThemeProps';
 import { ThemeDefault } from '../styles/ThemeDefault';
 import { ThemeDark } from '../styles/ThemeDark';
-import { ThemeHome2 } from '../styles/ThemeHome2';
+import { ThemeHome2 } from '../styles/ThemeDark2';
 
 export function getTheme(num: number): ThemeProps {
 	switch (num) {
